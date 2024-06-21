@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>算法（回溯）-n皇后问题</title>
+      <link href="/2024/06/21/6-21/"/>
+      <url>/2024/06/21/6-21/</url>
+      
+        <content type="html"><![CDATA[<h1 id="算法（回溯）-n皇后问题"><a href="#算法（回溯）-n皇后问题" class="headerlink" title="算法（回溯）-n皇后问题"></a>算法（回溯）-n皇后问题</h1><blockquote><p>该题主要来自于力扣。算法主要使用了回溯的算法思想，该题的相关代码思路来自于代码随想录的carl哥。</p><p><a href="https://programmercarl.com/0051.N%E7%9A%87%E5%90%8E.html#%E6%80%9D%E8%B7%AF">https://programmercarl.com/0051.N%E7%9A%87%E5%90%8E.html#%E6%80%9D%E8%B7%AF</a></p></blockquote><h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p><a href="https://leetcode.cn/problems/n-queens/description/">https://leetcode.cn/problems/n-queens/description/</a></p><img src="/2024/06/21/6-21/image-20240621093705811.png" class="" title="题目描述"><h3 id="题目解析："><a href="#题目解析：" class="headerlink" title="题目解析："></a>题目解析：</h3><p>该题主要使用了回溯法，而且，n皇后问题要求所有皇后不在同一行，同一列，同一斜线。因此我们把整个棋盘看作一个树。</p><p>在每一层不断循环，往下一行则是模拟树枝向下的过程，逐渐递归。结束该层某个元素之后，就进行回溯。</p><p>相对来说思路比较简单，主要是需要一个验证当前位置是否合法的isvalid函数。</p><h3 id="代码解析："><a href="#代码解析：" class="headerlink" title="代码解析："></a>代码解析：</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">class Solution {</span><br><span class="line">vector&lt;vector&lt;string&gt;&gt; result;</span><br><span class="line">private:</span><br><span class="line">    void huisu(int n,int row,vector&lt;string&gt;&amp; checkpoint){</span><br><span class="line">        if(n==row){</span><br><span class="line">            result.push_back(checkpoint);</span><br><span class="line">            return;</span><br><span class="line">        }</span><br><span class="line">        for(int i=0;i&lt;n;i++){</span><br><span class="line">            if(isvalid(n,i,row,checkpoint)){//n是总行数列数，i是当前列数，row是当前行数</span><br><span class="line">                checkpoint[row][i]='Q';</span><br><span class="line">                huisu(n,row+1,checkpoint);</span><br><span class="line">                checkpoint[row][i]='.';</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    bool isvalid(int n ,int col ,int row , vector&lt;string&gt; checkpoint){</span><br><span class="line">        for(int i=0;i&lt;row;i++){</span><br><span class="line">            if(checkpoint[i][col]=='Q'){</span><br><span class="line">                return false;</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">        //45度</span><br><span class="line">        for(int i=row-1,j=col-1;i&gt;=0&amp;&amp;j&gt;=0;i--,j--){</span><br><span class="line">            if(checkpoint[i][j]=='Q'){</span><br><span class="line">                return false;</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">        //135度</span><br><span class="line">        for(int i=row-1, j=col+1;i&gt;=0&amp;&amp;j&lt;n;i--,j++){</span><br><span class="line">            if(checkpoint[i][j]=='Q'){</span><br><span class="line">                return false;</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">        return true;</span><br><span class="line">    }</span><br><span class="line">public:</span><br><span class="line">    vector&lt;vector&lt;string&gt;&gt; solveNQueens(int n) {</span><br><span class="line">        std::vector&lt;std::string&gt; checkpoint(n,std::string(n,'.'));</span><br><span class="line">        result.clear();</span><br><span class="line">        huisu(n,0,checkpoint);</span><br><span class="line">        return result;</span><br><span class="line">    }</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure><p>注意初始化checkpoint的时候，要使用相关stl的构造函数。</p><p>整体上该题思路不是很难。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 算法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> -回溯算法 -n皇后 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>重新安排行程（回溯算法）</title>
       <link href="/2024/06/20/6-20/"/>
       <url>/2024/06/20/6-20/</url>
